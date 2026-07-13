@@ -1,0 +1,29 @@
+{
+  "name": "karyix",
+  "version": "1.0.0",
+  "description": "A platform where work gets organized, managed, and completed efficiently",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HarshalPatil-HP/Karyix.git"
+  },
+  "keywords": [
+    "backend",
+    "API",
+    "creation",
+    "project"
+  ],
+  "author": "Harshal Patil",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/HarshalPatil-HP/Karyix/issues"
+  },
+  "homepage": "https://github.com/HarshalPatil-HP/Karyix#readme",
+  "devDependencies": {
+    "prettier": "3.9.5"
+  }
+}
