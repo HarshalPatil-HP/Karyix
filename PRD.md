@@ -1,5 +1,6 @@
 # Product Requirements Document (PRD)
 
+
 ## Karyix Backend
 
 ### 1. Product Overview
@@ -178,3 +179,4 @@ Karyix Backend is a RESTful API service designed to support collaborative projec
 - File attachment capability for enhanced collaboration
 - Email notification system for user verification and password reset
 - Comprehensive API documentation through endpoint structure
+- 
