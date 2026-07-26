@@ -45,7 +45,7 @@ const register = asyncHandler(async (req, res) => {
         email,
         password, 
         role: role || 'user',
-        isVerified: false
+        isEmailVerified: false
     })
 
     if(!user){
