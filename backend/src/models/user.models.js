@@ -2,6 +2,7 @@ import { Schema } from "mongoose";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import crypto from "crypto";
+import mongoose from "mongoose";
 
 const userSchema=new Schema(
     {
@@ -17,7 +18,7 @@ const userSchema=new Schema(
         },
         username:{
             type:String,
-            require:true,
+            required:true,
             unique:true,
             lowercase:true,
             trim:true,
@@ -25,7 +26,7 @@ const userSchema=new Schema(
         },
         email:{
             type:String,
-            require:true,
+            required:true,
              unique:true,
             lowercase:true,
             trim:true,
@@ -66,12 +67,12 @@ const userSchema=new Schema(
 userSchema.pre("save",async function(next) {
     if(!this.isModified("password")) return next();
 
-    this.password=bcrypt.hash(this.password,10);
+    this.password = await bcrypt.hash(this.password,10);
     next();
 });
 
-userSchema.methods.isPasswordCorrect= async function (next) {
-    return await bcrypt.compare(password,this.password);
+userSchema.methods.isPasswordCorrect = async function (password) {
+    return await bcrypt.compare(password, this.password);
 };
 
 userSchema.methods.getAccessToken=function (){
@@ -121,5 +122,4 @@ userSchema.methods.generateTemproryToken=function(){
     };
 }
 
-
-export const user=mongoose.model("User",userSchema);
+export const User = mongoose.model("User", userSchema);

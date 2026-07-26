@@ -1,10 +1,9 @@
 import asyncHandler from '../utils/async-handler.js';
 import { sendEmail, emailVerificationContent, forgotPasswordContent } from '../utils/mail.js';
-import User from '../models/user.model.js';
+import { User } from '../models/user.models.js';
 import jwt from 'jsonwebtoken';
 import ApiResponse from '../utils/api-response.js';
 import ApiError from '../utils/api-error.js';
-import { sendEmail } from '../utils/mail.js';
 const generateRefreshandAccessToken= async (userId)=>{
     try {
         const user= await User.findById(userId);
@@ -13,7 +12,7 @@ const generateRefreshandAccessToken= async (userId)=>{
     
         user.refreshToken=refresh;
         await user.save({ validateBeforeSave: false });
-        return { accessToken, refreshToken };
+       return { accessToken: access, refreshToken: refresh };
     } catch (error) {
         throw new ApiError(500,
       "Something went wrong while generating access/refresh token");
@@ -27,7 +26,7 @@ const register = asyncHandler(async (req, res) => {
         throw new ApiError(408,"enter all credentials")
     }
     
-    const userExist= await User.findone({
+    const userExist= await User.findOne({
         $or:[
             {
                 username
@@ -88,4 +87,5 @@ const register = asyncHandler(async (req, res) => {
     );
 });
     
+export {register}
 
