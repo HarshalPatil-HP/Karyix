@@ -86,16 +86,6 @@ const register = asyncHandler(async (req, res) => {
             "User registered successfully and verification email has been sent on your email",
       ),
     );
-
-
-    
-
-
-    
-
-    
-
-    
 });
     
 
