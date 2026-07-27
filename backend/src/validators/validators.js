@@ -1,6 +1,6 @@
 import { body } from "express-validator";
 
-export const userRegistrationValidators = () => {
+const userRegistrationValidators = () => {
     return [
         body("email")
     .trim()
@@ -27,3 +27,20 @@ export const userRegistrationValidators = () => {
     .escape()
     ]
 };
+
+const userloginvalidators=()=>{
+  return [
+    body("email")
+    .trim()
+    .notEmpty().withMessage("Email is required")
+    .isEmail().withMessage("Please provide a valid email address")
+    .normalizeEmail(),
+
+    body("password")
+    .notEmpty().withMessage("Password is required")
+    .isLength({ min: 6 , max: 20 }).withMessage("Password must be at least 6 characters long")
+  ]
+}
+
+
+export {userRegistrationValidators,userloginvalidators}
