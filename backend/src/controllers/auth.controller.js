@@ -4,6 +4,7 @@ import { User } from '../models/user.models.js';
 import jwt from 'jsonwebtoken';
 import ApiResponse from '../utils/api-response.js';
 import ApiError from '../utils/api-error.js';
+import { set } from 'mongoose';
 const generateRefreshandAccessToken= async (userId)=>{
     try {
         const user= await User.findById(userId);
@@ -104,7 +105,7 @@ const login=asyncHandler(async (req,res)=>{
             throw new ApiError(400,"Password is Incoorect")
         }
 
-    const {accessToken,refreshToken}=generateRefreshandAccessToken(user._id);
+    const {accessToken,refreshToken}=await generateRefreshandAccessToken(user._id);
     
     const loggedUser = await User.findById(user._id).select(
         "-password -refreshToken -emailVerificationToken -emailVerificationExpiry",
@@ -130,6 +131,39 @@ const login=asyncHandler(async (req,res)=>{
     
     
 });
+
+const logout= asyncHandler(async(req,res)=>{
+    await User.findByIdAndUpdate(
+        req.user._id,
+        {
+            $unset: {
+                refreshToken: 1 
+            }
+
+        },
+        {
+            returnDocument: 'after',
+        }
+    );
+
+    const options={
+        httpOnly:true,
+        secure:true
+    }
     
-export {register,login}
+    res
+    .status(200)
+    .clearCookie("accessToken",options)
+    .clearCookie("refreshToken",options)
+    .json(
+        new ApiResponse(
+            200,
+            {},
+            "user logged out"
+        )
+    )
+
+});
+    
+export {register,login,logout}
 
