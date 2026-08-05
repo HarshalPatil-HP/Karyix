@@ -5,6 +5,7 @@ import jwt from 'jsonwebtoken';
 import ApiResponse from '../utils/api-response.js';
 import ApiError from '../utils/api-error.js';
 import { set } from 'mongoose';
+import { use } from 'react';
 const generateRefreshandAccessToken= async (userId)=>{
     try {
         const user= await User.findById(userId);
@@ -173,6 +174,36 @@ const currentUser=asyncHandler(async(req,res)=>{
     );
 });
 
+const changePassword=asyncHandler(async(req,res)=>{
+    const {oldPass,newPass}=req.body;
+    const user=await User.findById(req.user._id)
 
-export {register,login,logout,currentUser}
+    const isPassValid=user.isPasswordCorrect(oldPass);
+
+    if(!isPassValid){
+        throw new ApiError(400,"Invalid Old Password")
+    }
+
+    user.password=newPass;
+    await user.save({validateBeforeSave:false})
+
+    return res
+    .status(200)
+    .json(
+        new ApiResponse(
+            200,
+            {},
+            "Password Is changed"
+        )
+    )
+
+});
+
+// const currentUser=asyncHandler(async(req,res)=>{})
+// const currentUser=asyncHandler(async(req,res)=>{})
+// const currentUser=asyncHandler(async(req,res)=>{})
+// const currentUser=asyncHandler(async(req,res)=>{})
+// const currentUser=asyncHandler(async(req,res)=>{})
+
+export {register,login,logout,currentUser,changePassword}
 
