@@ -237,12 +237,54 @@ const verifyEmail=asyncHandler(async(req,res)=>{
 
 })
 
+const refreshAccessToken=asyncHandler(async(req,res)=>{
+    const incomingRefresh=req.cookies.refreshToken || req.body.refreshToken;
+
+    if(!incomingRefresh){
+        throw new ApiError(404,"no refreshtoken")
+    }
+
+    try {
+        const decoded=jwt.verify(incomingRefresh,process.env.REFRESH_TOKEN_SECRET);
+
+        const user=await User.findById(decoded?._id);
+        if(!user){
+            throw new ApiError(404,"Invalid RefreshToken")
+        }
+        if(incomingRefresh !== user?.refreshToken){
+            throw new ApiError(404,"RefreshToken is Expired")
+        }
+
+        const options={
+            httpOnly:true,
+            secure:true
+        }
+
+        const {accessToken,refreshToken:newRefresh}=await generateRefreshandAccessToken(user._id);
+
+        user.refreshToken=newRefresh;
+        await user.save({validateBeforeSave:false});
+
+        return res
+        .status(200)
+        .cookie("accesstoken",accessToken,options)
+        .cookie("refreshToken",newRefresh,options)
+        .json(
+            new ApiResponse(200,{accessToken,refreshToken:newRefresh},
+                "updated tokens successfully"
+            )
+        )
+
+    } catch (error) {
+        throw new ApiError(404,"RefreshToken is Invalid")
+    }
+
+})
 
 
-// const currentUser=asyncHandler(async(req,res)=>{})
-// const currentUser=asyncHandler(async(req,res)=>{})
+
 // const currentUser=asyncHandler(async(req,res)=>{})
 // const currentUser=asyncHandler(async(req,res)=>{})
 
-export {register,login,logout,currentUser,changePassword}
+export {register,login,logout,currentUser,changePassword,verifyEmail}
 
