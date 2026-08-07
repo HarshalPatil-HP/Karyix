@@ -199,7 +199,46 @@ const changePassword=asyncHandler(async(req,res)=>{
 
 });
 
-// const currentUser=asyncHandler(async(req,res)=>{})
+const verifyEmail=asyncHandler(async(req,res)=>{
+    const {verificationToken}=req.params;
+
+    if(!verificationToken){
+        throw new ApiError(400,"cant get verificationtoken")
+    }
+    const hashed=crypto
+                    .createHash("sha256")
+                    .update(verificationToken)
+                    .digest("hex")
+
+    const user=await User.findOne({
+        emailVerificationToken:hashed,
+        emailVerificationExpiry:{$gt:Date.now()}
+    })
+    if(!user){
+        throw new ApiError(400,"token is invalid or time limit exceed")
+    }
+    user.emailVerificationToken=undefined;
+    user.emailVerificationExpiry=undefined;
+
+    user.isEmailVerified=true;
+    await user.save({validateBeforeSave:false});
+    
+    return res
+    .status(200)
+    .json(
+        ApiResponse(
+            200,
+            {
+                isEmailVerified:true
+            },
+            "Email is Verified"
+        )
+    )
+
+})
+
+
+
 // const currentUser=asyncHandler(async(req,res)=>{})
 // const currentUser=asyncHandler(async(req,res)=>{})
 // const currentUser=asyncHandler(async(req,res)=>{})

@@ -103,7 +103,6 @@ userSchema.methods.getRefreshToken=function (){
 userSchema.methods.generateTemproryToken=function(){
     const unhashed=crypto.randomBytes(10).toString("hex")
 
-    console.log(unhashed);
 
     const hashed=crypto
                 .createHash("sha256")
@@ -111,7 +110,7 @@ userSchema.methods.generateTemproryToken=function(){
                 .digest("hex")
     
     const tokenExpiry=Date.now()+(20*60*1000)    //20m
-    console.log(hashed);
+    
     
     return {
         unhashed,
