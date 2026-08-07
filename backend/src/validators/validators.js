@@ -42,5 +42,50 @@ const userloginvalidators=()=>{
   ]
 }
 
+const changePasswordValidators = () => {
+    return [
+        body("oldPass")
+            .notEmpty().withMessage("Old password is required"),
 
-export {userRegistrationValidators,userloginvalidators}
+        body("newPass")
+            .notEmpty().withMessage("New password is required")
+            .isLength({ min: 6, max: 20 }).withMessage("New password must be 6-20 characters long")
+    ]
+};
+
+const forgetPasswordValidators = () => {
+    return [
+        body("email")
+            .trim()
+            .notEmpty().withMessage("Email is required")
+            .isEmail().withMessage("Please provide a valid email address")
+            .normalizeEmail()
+    ]
+};
+
+const resetPassValidators = () => {
+    return [
+        body("newpass")
+            .notEmpty().withMessage("New password is required")
+            .isLength({ min: 6, max: 20 }).withMessage("Password must be 6-20 characters long")
+    ]
+};
+
+const resendEmailVerifyValidators = () => {
+    return [
+        body("email")
+            .trim()
+            .notEmpty().withMessage("Email is required")
+            .isEmail().withMessage("Please provide a valid email address")
+            .normalizeEmail()
+    ]
+};
+
+export {
+    userRegistrationValidators,
+    userloginvalidators,
+    changePasswordValidators,
+    forgetPasswordValidators,
+    resetPassValidators,
+    resendEmailVerifyValidators
+}
